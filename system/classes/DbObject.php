@@ -1228,7 +1228,7 @@ class DbObject extends DbService {
             if (!empty($v)) {
                 // check whether to use the old AESencrypt or new openssl_encrypt method
                 if ($this->w->Migration->isInstalled("AesToOpenssl") || $this->w->migrating) {
-                    return openssl_encrypt($v, "AES-256-CBC", Config::get("system.encryption")["key"], 0, Config::get("system.encryption")["iv"]);
+                    return openssl_encrypt($v, "AES-256-CBC", Config::get("openssl.key"), 0, Config::get("openssl.iv"));
                 }
 
                 else {

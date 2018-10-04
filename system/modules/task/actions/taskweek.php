@@ -56,6 +56,8 @@ function taskweek_ALL(Web &$w) {
 
 	// get list of groups of which i am a member
 	$mygroups = $w->Task->getMemberGroups($_SESSION['user_id']);
+	$members = [];
+	$group = [];
 	if ($mygroups) {
 		foreach ($mygroups as $mygroup) {
 			$taskgroup = $w->Task->getTaskGroup($mygroup->task_group_id);

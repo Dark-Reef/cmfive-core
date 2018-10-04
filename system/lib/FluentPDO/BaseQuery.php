@@ -223,7 +223,7 @@ abstract class BaseQuery implements IteratorAggregate {
 
 	private function clauseNotEmpty($clause) {
 		if ($this->clauses[$clause]) {
-			return (boolean) count($this->statements[$clause]);
+			return is_array($this->statements[$clause]) ? (boolean)count($this->statements[$clause]) : (boolean)$this->statements[$clause];
 		} else {
 			return (boolean) $this->statements[$clause];
 		}

@@ -68,6 +68,8 @@ function databasebackup_ALL(Web $w) {
                     $filesystem->write($filedir.$filename, file_get_contents($filedir.$filename));
                 }
             }
+        } else {
+            $w->error("No backuplocation set in config");
         }
     } else {
         $w->out("Could not find backup command");

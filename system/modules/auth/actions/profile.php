@@ -14,6 +14,12 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Change Password","section");
 	$lines[] = array("Password","password","password","");
 	$lines[] = array("Repeat Password","password","password2","");
+
+	$lines[] = ["2-factor authentication","section"];
+	// Enable 2-factor authentication
+	$lines[] = ["<input type='checkbox' name='active_2fa' id='active_2fa' v-model='active_2fa'>"];
+	$lines[] = ["<div id='barcode'></div>"];
+	
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
@@ -31,7 +37,9 @@ function profile_GET(Web &$w) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;
 	}
-	$w->out($f);
+
+	$w->ctx("form", $f);
+	$w->ctx("active_2fa", $user->active_2fa == 1 ? true : false);
 }
 
 function profile_POST(Web &$w) {
@@ -59,6 +67,7 @@ function profile_POST(Web &$w) {
 	}
 
 	$user->fill($_REQUEST);
+	$user->active_2fa = $user->active_2fa == "on" ? 1 : 0;
 	// Filter out everything except the path so that users cant make redirect urls out of cmfive
     $parse_url = parse_url($user->redirect_url);
     $redirect_url = $parse_url["path"];
@@ -74,6 +83,7 @@ function profile_POST(Web &$w) {
 	} else {
 		$user->password = null;
 	}
+
 	$user->update();
 
 	$contact = $user->getContact();

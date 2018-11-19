@@ -29,7 +29,13 @@ class User extends DbObject {
 	public $active_2fa;
 	public $secret_2fa;
 	
-    
+    public function checkPassword($password) {
+    	if (empty($this->password) || empty($this->password_salt) || empty($password)) {
+    		return false;
+    	}
+    	
+    	return $this->password == $this->encryptPassword($password);
+    }
 
 	public function getLanguage() {
 		return $this->$language;
@@ -312,9 +318,9 @@ class User extends DbObject {
 	}
 
 	/**
-	 * encrypt the password using sha1 and a global salt.
+	 * Encrypt the password using sha1 and a user unique salt.
 	 *
-	 * @param unknown $password
+	 * @param string $password
 	 * @return string
 	 */
 	public function encryptPassword($password) {

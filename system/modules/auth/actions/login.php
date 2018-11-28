@@ -16,9 +16,13 @@ function login_GET(Web $w) {
 
 function login_POST(Web &$w) {
     if ($_POST['login'] && $_POST['password']) {
-        $client_timezone = "Australia/Sydney"; //$_POST['user_timezone'];
+        $client_timezone = "Australia/Sydney";
         $user = $w->Auth->login($_POST['login'], $_POST['password'], $client_timezone);
         if ($user) {
+            if ($user->is_mfa_enabled) {
+                $w->redirect('/auth/confirmMfa');
+            }
+
             if ($w->session('orig_path') != "auth/login") {
                 $url = $w->session('orig_path');
                 $w->Log->debug("Original path: " . $url);

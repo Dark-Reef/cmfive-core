@@ -6,7 +6,8 @@
             array("Login","text","login",$user->login),
             array("Admin","checkbox","is_admin",$user->is_admin),
             array("Active","checkbox","is_active",$user->is_active),
-            array("External", "checkbox", "is_external", $user->is_external),
+			array("External", "checkbox", "is_external", $user->is_external),
+			array("MFA Enabled", "checkbox", "is_mfa_enabled", $user->is_mfa_enabled),
 			array("Language", "select", "language", $user->language, $availableLocales));
 
 $form['User Details'][] = array(

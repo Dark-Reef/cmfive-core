@@ -1,4 +1,5 @@
 <?php
+
 function profile_GET(Web &$w) {
 	$p=$w->pathMatch("box");
 	$user = $w->Auth->user();
@@ -14,6 +15,9 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Change Password","section");
 	$lines[] = array("Password","password","password","");
 	$lines[] = array("Repeat Password","password","password2","");
+	$lines[] = array("MFA", "section", "is_mfa_enabled");
+	$lines[] = array("MFA Enabled", "checkbox", "is_mfa_enabled", $user->is_mfa_enabled);
+	$lines[] = array("<div id='mfa_qr_code'></div>");
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
@@ -31,7 +35,13 @@ function profile_GET(Web &$w) {
 		$w->setLayout(null);
 		$f = "<h2>Edit Profile</h2>".$f;
 	}
-	$w->out($f);
+
+	$w->ctx('form', $f);
+	$w->ctx('mfa_enabled', $user->mfa_enabled);
+
+	VueComponentRegister::registerComponent('LoadingIndicator', new VueComponent('LoadingIndicator', '/system/templates/vue-components/loading-indicator.vue.js', '/system/templates/vue-components/loading-indicator.vue.css'));
+	CmfiveScriptComponentRegister::registerComponent('Axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
+	CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent('/system/templates/js/Toast.js'));
 }
 
 function profile_POST(Web &$w) {

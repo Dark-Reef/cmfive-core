@@ -28,6 +28,7 @@ class User extends DbObject {
 	public $language;
 	public $is_mfa_enabled;
 	public $mfa_secret;
+<<<<<<< Updated upstream
 	
     public function checkPassword($password) {
     	if (empty($this->password) || empty($this->password_salt) || empty($password)) {
@@ -36,6 +37,8 @@ class User extends DbObject {
     	
     	return $this->password == $this->encryptPassword($password);
     }
+=======
+>>>>>>> Stashed changes
 
 	public function getLanguage() {
 		return $this->$language;

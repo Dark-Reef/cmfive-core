@@ -1,4 +1,10 @@
-<?php echo $form; ?>
+<?php 
+use Html\Form\InputField;
+
+echo $form;
+echo CmfiveScriptComponentRegister::getComponent("Axios")->_include();
+echo CmfiveScriptComponentRegister::getComponent("ToastJS")->_include();
+?>
 
 <script>
     new Vue({
@@ -6,31 +12,43 @@
 
         data: function () {
             return {
-                mfa_enabled: "<?php echo $mfa_enabled; ?>"
+                mfa_enabled: <?php echo $is_mfa_enabled; ?>,
+                setting_up_mfa: false
             }
         },
-        watch: {
-            mfa_enabled: function(v) {
+        methods: {
+            enableMfa: function() {
                 var mfa_qr_code = document.getElementById("mfa_qr_code");
-                
-                if (v) {
-                    mfa_qr_code.innerHTML = "<loading-indicator :show='true'></loading-indicator>";
-                    axios.get('/auth/getMfaQrCode')
-                    .then(function(result) {
-                        mfa_qr_code.innerHTML = data;
-                    })
-                    .catch(function(error) {
-                        new Toast("Failed to retrieve QR Code").show();
+                axios.get('/auth/ajaxGetMfaQrCode').then(function(response) {
+                        mfa_qr_code.innerHTML = response.data.mfa_qr_code + ''
+                        setting_up_mfa = true;
+                    }).catch(function(error) {
+                        mfa_qr_code.innerHTML = "<p>Failed to generate MFA QR Code<p>"
                     });
-                    // $.get("/auth/gettwofactorbarcode", function(data, status){
-                    //     mfa_qr_code.innerHTML = data;
-                    // });
+            }
+        },
+        computed: {
+            isMfaEnabledToString: function() {
+                debugger;
+                if (this.setting_up_mfa) {
+                    return "Cancel";
                 }
-
-                if (!v) {
-                    mfa_qr_code.innerHTML = "";
-                }
+                return this.mfa_enabled == 0 ? "Enable" : "Disable"
             }
         }
     });
 </script>
+
+
+<form action="" method="post" class="small-12 columns">
+    <div class="row-fluid clearfix small-12 multicolform">
+        <div class="panel clearfix">
+            <label class="small-12 columns">Item Name
+                <?php echo (new \Html\Form\InputField\Text([
+                    'id|name' => 'mfa_code',
+                    'required' => 'true'
+                ])); ?>
+            </label>
+        </div>
+    </div>
+</form>

@@ -15,9 +15,8 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Change Password","section");
 	$lines[] = array("Password","password","password","");
 	$lines[] = array("Repeat Password","password","password2","");
-	$lines[] = array("MFA", "section", "is_mfa_enabled");
-	$lines[] = array("MFA Enabled", "checkbox", "is_mfa_enabled", $user->is_mfa_enabled);
-	$lines[] = array("<div id='mfa_qr_code'></div>");
+	$lines[] = array("Multi Factor Authentication", "section", "is_mfa_enabled");
+	$lines[] = array("<div id='mfa_qr_code'><button class='tiny top-button' type='button' @click='enableMfa()'>Enable</button></div>");	
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");
@@ -37,7 +36,7 @@ function profile_GET(Web &$w) {
 	}
 
 	$w->ctx('form', $f);
-	$w->ctx('mfa_enabled', $user->mfa_enabled);
+	$w->ctx('is_mfa_enabled', $user->is_mfa_enabled);
 
 	VueComponentRegister::registerComponent('LoadingIndicator', new VueComponent('LoadingIndicator', '/system/templates/vue-components/loading-indicator.vue.js', '/system/templates/vue-components/loading-indicator.vue.css'));
 	CmfiveScriptComponentRegister::registerComponent('Axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));

@@ -14,7 +14,7 @@ function ajaxGetMfaQrCode_GET(Web $w) {
     $secret = $authenticator->generateSecret();
 
     $user = $w->Auth->user();
-    $user->secret_2fa = $secret;
+    $user->mfa_secret = $secret;
     $user->update();
 
     $link = \Sonata\GoogleAuthenticator\GoogleQrUrl::generate($user->getFullName(), $secret, '2Pi Software CRM');

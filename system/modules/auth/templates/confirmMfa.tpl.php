@@ -1,1 +1,0 @@
-<?php echo $mfa_qr_code; ?>

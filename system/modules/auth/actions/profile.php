@@ -16,7 +16,7 @@ function profile_GET(Web &$w) {
 	$lines[] = array("Password","password","password","");
 	$lines[] = array("Repeat Password","password","password2","");
 	$lines[] = array("Multi Factor Authentication", "section", "is_mfa_enabled");
-	$lines[] = array("<div id='mfa_qr_code'><button class='tiny top-button' type='button' @click='enableMfa()'>Enable</button></div>");	
+	$lines[] = array("<div id='mfa_qr_code'><button class='tiny top-button' type='button' @click='enableMfa()'>Enable</button></div>");
 	$lines[] = array("Contact Details","section");
 	$lines[] = array("First Name","text","firstname",$contact ? $contact->firstname : "");
 	$lines[] = array("Last Name","text","lastname",$contact ? $contact->lastname : "");

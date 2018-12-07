@@ -346,4 +346,11 @@ class User extends DbObject {
 		return md5(uniqid(rand(), TRUE));
 	}
 
+	public function toArray() {
+		return ['id' => $this->id,
+				'login' => $this->login,
+				'is_admin' => $this->is_admin,
+				'contact_id' => $this->contact_id,
+				'is_mfa_enabled' => $this->is_mfa_enabled];
+	}
 }

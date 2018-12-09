@@ -351,6 +351,6 @@ class User extends DbObject {
 				'login' => $this->login,
 				'is_admin' => $this->is_admin,
 				'contact_id' => $this->contact_id,
-				'is_mfa_enabled' => $this->is_mfa_enabled];
+				'is_mfa_enabled' => $this->is_mfa_enabled == "0" ? false : true];
 	}
 }

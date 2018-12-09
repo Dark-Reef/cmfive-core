@@ -1,19 +1,23 @@
 <?php
 
-function ajaxGetMfaQrCode_GET(Web $w) {
+function ajaxGetMfaQrCode_POST(Web $w) {
     $w->setLayout(null);
+    $posts = json_decode(file_get_contents(('php://input')));
 
-    $user = $w->Auth->user();
+    if (empty($posts->user_id)) {
+        $w->out((new AxiosResponse())->setErrorResponse('Unable to find user'));
+        return;
+    }
 
-    if (empty($user)) {
-        $w->out((new AxiosResponse())->setErrorResponse('User not logged in.'));
+    if ($w->Auth->user()->id != $posts->user_id || !$w->Auth->user()->is_admin) {
+        $w->out((new AxiosResponse())->setErrorResponse('Not authorized to update user'));
         return;
     }
 
     $authenticator = new \Google\Authenticator\GoogleAuthenticator();
     $secret = $authenticator->generateSecret();
 
-    $user = $w->Auth->user();
+    $user = $w->Auth->getUser($posts->user_id);
     $user->mfa_secret = $secret;
     $user->update();
 

@@ -156,4 +156,16 @@ class Contact extends DbObject {
 	function getSelectOptionTitle() {
 		return $this->getFullName();
 	}
+
+	public function toArray() {
+		return ['id' => $this->id,
+				'first_name' => $this->firstname,
+				'last_name' => $this->lastname,
+				'home_phone' => $this->homephone,
+				'work_phone' => $this->workphone,
+				'private_mobile' => $this->priv_mobile,
+				'work_mobile' => $this->mobile,
+				'email' => $this->email,
+				'fax' => $this->fax];
+	}
 }

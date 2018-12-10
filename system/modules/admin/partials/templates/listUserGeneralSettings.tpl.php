@@ -55,6 +55,7 @@
                         general_settings.is_loading = false;
                     }
                 }).catch(function(error) {
+                    console.log(error);
                     new Toast("Failed to update").show();
                     general_settings.is_loading = false;
                 });

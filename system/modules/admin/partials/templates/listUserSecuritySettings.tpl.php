@@ -1,23 +1,30 @@
 <div v-cloak id="security_settings">
     <div class="small-6 columns">
-        <h3>Change Password</h3>
+        <div class="small-12 columns">
+            <h3>Change Password</h3>
+        </div>
+        <form method="post" @submit.prevent="changePassword">
+            <div class="small-12 columns">
+                <label>Old Password</label>
+                <input type="password" v-if="!show_passwords.old_password" v-model="user_passwords.old_password" required>
+                <input type="text" v-if="show_passwords.old_password" v-model="user_passwords.old_password" required>
+                <label>New Password</label>
+                <input type="password" v-if="!show_passwords.new_password" v-model="user_passwords.new_password" required>
+                <input type="text" v-if="show_passwords.new_password" v-model="user_passwords.new_password" required>
+                <label>Confirm New Password</label>
+                <input type="password" v-if="!show_passwords.confirm_new_password" v-model="user_passwords.confirm_new_password" required>
+                <input type="text" v-if="show_passwords.confirm_new_password" v-model="user_passwords.confirm_new_password" required>
+            </div>
+            <div class="small-12 columns" style="padding-top: 1rem">
+                <input type="submit" class="button small" v-model="changePasswordButtonValue()" :disabled="is_loading">
+            </div>
+        </form>
     </div>
     <div class="small-6 columns">
-        <h3>Multi Factor Authentication</h3>
-    </div>
-    <form method="post" @submit.prevent="changePassword">
-        <div class="small-6 columns">
-            <label>Old Password</label>
-            <input type="password" v-if="!show_passwords.old_password" v-model="user_passwords.old_password" required>
-            <input type="text" v-if="show_passwords.old_password" v-model="user_passwords.old_password" required>
-            <label>New Password</label>
-            <input type="password" v-if="!show_passwords.new_password" v-model="user_passwords.new_password" required>
-            <input type="text" v-if="show_passwords.new_password" v-model="user_passwords.new_password" required>
-            <label>Confirm New Password</label>
-            <input type="password" v-if="!show_passwords.confirm_new_password" v-model="user_passwords.confirm_new_password" required>
-            <input type="text" v-if="show_passwords.confirm_new_password" v-model="user_passwords.confirm_new_password" required>
+        <div class="small-12 columns">
+            <h3>Multi Factor Authentication</h3>
         </div>
-        <div class="small-6 columns" style="padding-top: 1.25rem">
+        <div class="small-12 columns" style="padding-top: 1.25rem">
             <div class="container">
                 <div class="small-4 columns container-item">
                     <label style="font-weight: bold;">Google Authenticator</label>
@@ -30,10 +37,18 @@
                 </div>
             </div>
         </div>
-        <div class="small-12 columns" style="padding-top: 1rem">
-            <input type="submit" class="button small" v-model="changePasswordButtonValue()" :disabled="is_loading">
+    </div>
+    <modal id="mfa-modal" modal-title="Confirm MFA" style="max-width: 30rem;">
+        <div class="small-6 columns" v-html="mfa_qr_code">
         </div>
-    </form>
+        <div class="small-6 columns">
+            <form method="post" @submit.prevent="">
+                <label>MFA Code<label>
+                <input type="text" v-model="mfa_code" required>
+                <input type="submit" class="button small" style="margin-top: 1rem;" value="Confirm" :disabled="is_loading">
+            </form>
+        </div>
+    </modal>
 </div>
 <script>
     var security_settings = new Vue({
@@ -43,6 +58,7 @@
                 user: <?php echo json_encode($user_array); ?>,
                 user_passwords: {old_password: '', new_password: '', confirm_new_password: ''},
                 show_passwords: {old_password: false, new_password: false, confirm_new_password: false},
+                mfa_code: null,
                 show_mfa_modal: false,
                 mfa_qr_code: null,
                 is_loading: false,
@@ -56,6 +72,7 @@
                     }).then(function(response) {
                         security_settings.user.is_mfa_enabled = false;
                     }).catch(function(error) {
+                        console.log(error);
                         new Toast("Failed to remove MFA").show();
                     });
                 } else {
@@ -64,7 +81,9 @@
                     }).then(function(response) {
                         security_settings.mfa_qr_code = response.data.mfa_qr_code;
                         security_settings.show_mfa_modal = true;
+                        $("#mfa-modal").foundation('reveal', 'open');
                     }).catch(function(error) {
+                        console.log(error);
                         new Toast("Failed to generate MFA QR Code").show();
                     });
                 }
@@ -107,6 +126,10 @@
             }
         }
     })
+
+    function showMfaModal() {
+        $("mfa_modal").foundation('reveal', 'open');
+    }
 </script>
 <style>
     svg {

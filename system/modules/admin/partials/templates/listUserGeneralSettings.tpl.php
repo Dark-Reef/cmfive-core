@@ -51,12 +51,12 @@
                     contact: this.contact
                 }).then(function(response) {
                     if (response.statusText == 'OK') {
-                        new Toast("Update successful!").show();
-                        general_settings.is_loading = false;
+                        new Toast('Update successful!').show();
                     }
+                    general_settings.is_loading = false;
                 }).catch(function(error) {
                     console.log(error);
-                    new Toast("Failed to update").show();
+                    new Toast('Failed to update').show();
                     general_settings.is_loading = false;
                 });
             },

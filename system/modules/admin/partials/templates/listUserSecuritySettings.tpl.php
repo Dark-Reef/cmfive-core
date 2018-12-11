@@ -42,7 +42,7 @@
         <div class="small-6 columns" v-html="mfa_qr_code">
         </div>
         <div class="small-6 columns">
-            <form method="post" @submit.prevent="">
+            <form method="post" @submit.prevent="confirmMfa">
                 <label>MFA Code<label>
                 <input type="text" v-model="mfa_code" required>
                 <input type="submit" class="button small" style="margin-top: 1rem;" value="Confirm" :disabled="is_loading">
@@ -73,7 +73,7 @@
                         security_settings.user.is_mfa_enabled = false;
                     }).catch(function(error) {
                         console.log(error);
-                        new Toast("Failed to remove MFA").show();
+                        new Toast('Failed to remove MFA').show();
                     });
                 } else {
                     axios.post('/auth/ajaxGetMfaQrCode', {
@@ -81,23 +81,41 @@
                     }).then(function(response) {
                         security_settings.mfa_qr_code = response.data.mfa_qr_code;
                         security_settings.show_mfa_modal = true;
-                        $("#mfa-modal").foundation('reveal', 'open');
+                        $('#mfa-modal').foundation('reveal', 'open');
                     }).catch(function(error) {
                         console.log(error);
-                        new Toast("Failed to generate MFA QR Code").show();
+                        new Toast('Failed to generate MFA QR Code').show();
                     });
                 }
+            },
+            confirmMfa: function() {
+                this.is_loading = true;
+
+                axios.post('/auth/ajaxConfirmMfaCode', {
+                    user_id: security_settings.user.id,
+                    mfa_code: security_settings.mfa_code
+                }).then(function(response) {
+                    if (response.statusText == 'Ok') {
+                        $('#mfa-modal').foundation('reveal', 'close');
+                        new Toast('MFA Code confirmation successful!').show();
+                    }
+                    security_settings.is_loading = false;
+                }).catch(function(error) {
+                    console.log(error);
+                    new Toast('Failed to confirm MFA Code').show();
+                    security_settings.is_loading = false;
+                });
             },
             changePassword: function() {
                 this.is_loading = true;
 
                 if (this.user_passwords.new_password != this.user_passwords.confirm_new_password) {
-                    new Toast("Passwords do not match").show();
+                    new Toast('Passwords do not match').show();
                     return;
                 }
 
                 if (this.user_passwords.new_password.length == 0) {
-                    new Toast("Password cannot be empty").show();
+                    new Toast('Password cannot be empty').show();
                     return;
                 }
 
@@ -114,7 +132,7 @@
                     security_settings.show_passwords.old_password = false;
                     security_settings.show_passwords.new_password = false;
                     security_settings.show_passwords.confirm_new_password = false;
-                    new Toast("Successfully changed password!").show();
+                    new Toast('Successfully changed password!').show();
                     security_settings.is_loading = false;
                 }).catch(function(error) {
                     new Toast(error.response.data).show();
@@ -122,13 +140,13 @@
                 });
             },
             changePasswordButtonValue: function() {
-                return this.is_loading ? "Changing" : "Change Password";
+                return this.is_loading ? 'Changing' : 'Change Password';
             }
         }
     })
 
     function showMfaModal() {
-        $("mfa_modal").foundation('reveal', 'open');
+        $('mfa_modal').foundation('reveal', 'open');
     }
 </script>
 <style>

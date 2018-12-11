@@ -5,12 +5,12 @@ function ajaxGetMfaQrCode_POST(Web $w) {
     $posts = json_decode(file_get_contents(('php://input')));
 
     if (empty($posts->user_id)) {
-        $w->out((new AxiosResponse())->setErrorResponse('Unable to find user'));
+        $w->out((new AxiosResponse())->setErrorResponse(null, 'Unable to find user'));
         return;
     }
 
     if ($w->Auth->user()->id != $posts->user_id || !$w->Auth->user()->is_admin) {
-        $w->out((new AxiosResponse())->setErrorResponse('Not authorized to update user'));
+        $w->out((new AxiosResponse())->setErrorResponse(null, 'Not authorized to update user'));
         return;
     }
 

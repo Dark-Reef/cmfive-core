@@ -9,8 +9,8 @@
     <button type="button" onclick="window.location.href='/auth/forgotpassword';" class="button alert large-5 small-12 right">Forgot Password</button>
 </form>
 
-<!-- <div v-cloak id="app">
-    <div v-show="!user_is_mfa_enabled">
+<div v-cloak id="app">
+    <div v-if="!user_is_mfa_enabled">
         <form method="post" @submit.prevent="isMfaEnabled">
             <label>Login</label>
             <input type="text" v-model="user_login" required>
@@ -20,9 +20,11 @@
             <button type="button" class="button alert large-5 small-12 right" @click="" >Forgot Password</button>
         </form>
     </div>
-    <div v-show="user_is_mfa_enabled">
+    <div v-if="user_is_mfa_enabled">
         <form method="post" @submit.prevent="login">
-
+            <label>MFA Code</label>
+            <input type="text" v-model="user_mfa_code" required>
+            <input type="submit" class="button large-5 small-12" value="Confirm" :disable="is_loading">
         </form>
     </div>
 </div>
@@ -60,4 +62,4 @@
             }
         }
     })
-</script> -->
+</script>

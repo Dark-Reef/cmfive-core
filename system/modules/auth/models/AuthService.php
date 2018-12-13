@@ -1,18 +1,20 @@
 <?php
 
-class AuthService extends DbService {
+class AuthService extends DbService
+{
 
     public $_roles;
     public $_roles_loaded = false;
     public $_rest_user = null;
-	private static $_cache = array();
+    private static $_cache = array();
 
-    function login($login, $password, $client_timezone, $skip_session = false) {
+    function login($login, $password, $client_timezone, $skip_session = false)
+    {
         $user = $this->getUserForLogin($login);
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 1) {
             return null;
         }
-        
+
         $user->updateLastLogin();
         if (!$skip_session) {
             $this->w->session('user_id', $user->id);
@@ -21,13 +23,14 @@ class AuthService extends DbService {
         return $user;
     }
 
-    function externalLogin($login, $password, $skip_session = false) {
-        
+    function externalLogin($login, $password, $skip_session = false)
+    {
+
         $user = $this->getUserForLogin($login);
         if (empty($user->id) || ($user->encryptPassword($password) !== $user->password) || $user->is_external == 0) {
             return null;
         }
-        
+
 
         $user->updateLastLogin();
         if (!$skip_session) {
@@ -36,11 +39,12 @@ class AuthService extends DbService {
         return $user;
     }
 
-    function forceLogin($user_id = null) {
+    function forceLogin($user_id = null)
+    {
         if (empty($user_id)) {
             return;
         }
-        
+
         $user = $this->getUser($user_id);
         if (empty($user->id)) {
             return null;
@@ -50,24 +54,40 @@ class AuthService extends DbService {
         $this->w->session('user_id', $user->id);
     }
 
-    function __init() {
+    function __init()
+    {
         $this->_loadRoles();
     }
 
-    function loggedIn() {
+    function loggedIn()
+    {
         return $this->w->session('user_id');
     }
 
-    function getUserForLogin($login) {
-        $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
-		return $this->getObjectFromRow("User", $user);
+    public function isMfaEnabled($user_login) {
+        $user = $this->getObject('User', ['login' => $user_login]);
+
+        if (!empty($user) && $user->is_mfa_enabled) {
+            return true;
+        } else if (empty($user)) {
+            return null;
+        }
+        return false;
     }
 
-    function getUserForToken($token) {
+    function getUserForLogin($login)
+    {
+        $user = $this->db->get("user")->where("login", $login)->and("is_deleted", 0)->fetch_row();
+        return $this->getObjectFromRow("User", $user);
+    }
+
+    function getUserForToken($token)
+    {
         return $this->getObject("User", array("password_reset_token" => $token));
     }
 
-    function setRestUser($user) {
+    function setRestUser($user)
+    {
         $this->_rest_user = $user;
     }
 
@@ -82,7 +102,8 @@ class AuthService extends DbService {
      * @param mixed $contact_id
      * @return int user_id
      */
-    function createExernalUserForContact($contact_id) {
+    function createExernalUserForContact($contact_id)
+    {
         $contact = $this->getContact($contact_id);
 
         if (empty($contact->id)) {
@@ -103,15 +124,18 @@ class AuthService extends DbService {
         return $user->id;
     }
 
-    function getContacts() {
+    function getContacts()
+    {
         return $this->getObjects('Contact', ['is_deleted' => 0]);
     }
 
-    function getContact($contact_id) {
+    function getContact($contact_id)
+    {
         return $this->getObject("Contact", ['id' => $contact_id]);
     }
 
-    function getContactByEmail($email) {
+    function getContactByEmail($email)
+    {
         return $this->getObject("Contact", ['email' => filter_var($email, FILTER_SANITIZE_EMAIL), 'is_deleted' => 0]);
     }
 
@@ -123,7 +147,8 @@ class AuthService extends DbService {
      * 
      * @return User|NULL
      */
-    function user() {
+    function user()
+    {
         // special case where RestService handles authentication
         if ($this->_rest_user) {
             return $this->_rest_user;
@@ -140,32 +165,33 @@ class AuthService extends DbService {
      * 
      * checks if the CURRENT user has this role
      */
-    function hasRole($role) {
+    function hasRole($role)
+    {
         return $this->user() ? $this->user()->hasRole($role) : false;
     }
 
-	/**
+    /**
      * 
      * Check if the current user can access the specified path
      * @ return false if the login user is not allowed access to this path
      *  OR return string url if it is provided as a parameter
      */
-    function allowed($path, $url = null) {
-		$key = $path.'::'.$url;
-		if(!empty(self::$_cache[$key])) {
-			return self::$_cache[$key];
-		}
+    function allowed($path, $url = null)
+    {
+        $key = $path . '::' . $url;
+        if (!empty(self::$_cache[$key])) {
+            return self::$_cache[$key];
+        }
         $parts = $this->w->parseUrl($path);
         if (!in_array($parts['module'], $this->w->modules())) {
-            $this->Log->error("Denied access: module '". urlencode($parts['module']). "' doesn't exist");
-			self::$_cache[$key] = false;
+            $this->Log->error("Denied access: module '" . urlencode($parts['module']) . "' doesn't exist");
+            self::$_cache[$key] = false;
             return false;
         }
 
-        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || 
-        	($this->user() && $this->user()->allowed($path))) {
-			self::$_cache[$key] = $url ? $url : true;
-        	return self::$_cache[$key];
+        if ((function_exists("anonymous_allowed") && anonymous_allowed($this->w, $path)) || ($this->user() && $this->user()->allowed($path))) {
+            self::$_cache[$key] = $url ? $url : true;
+            return self::$_cache[$key];
         }
         self::$_cache[$key] = false;
         return false;
@@ -176,7 +202,8 @@ class AuthService extends DbService {
      *
      * @return array of strings
      */
-    function getAllRoles() {
+    function getAllRoles()
+    {
         $this->_loadRoles();
         if (!$this->_roles) {
             $roles = array();
@@ -192,7 +219,8 @@ class AuthService extends DbService {
         return $this->_roles;
     }
 
-    function _loadRoles() {
+    function _loadRoles()
+    {
         // do this only once
         if ($this->_roles_loaded)
             return;
@@ -207,40 +235,45 @@ class AuthService extends DbService {
         $this->_roles_loaded = true;
     }
 
-    function getUser($id) {
+    function getUser($id)
+    {
         return $this->getObject("User", $id);
     }
 
-    function getUsersAndGroups($includeDeleted = false) {
-    	$where = [
+    function getUsersAndGroups($includeDeleted = false)
+    {
+        $where = [
             "is_active" => 1,
             "is_external" => 0
         ];
 
-    	if (!$includeDeleted) {
-    		$where["is_deleted"] = 0;
-    	}
+        if (!$includeDeleted) {
+            $where["is_deleted"] = 0;
+        }
         return $this->getObjects("User", $where);
     }
 
-    function getUsers($includeDeleted = false) {
+    function getUsers($includeDeleted = false)
+    {
         $where = [
             "is_group" => 0,
             "is_active" => 1,
             "is_external" => 0
         ];
 
-    	if (!$includeDeleted) {
-    		$where["is_deleted"]=0;
-    	}
-    	return $this->getObjects("User", $where);
+        if (!$includeDeleted) {
+            $where["is_deleted"] = 0;
+        }
+        return $this->getObjects("User", $where);
     }
-    
-    function getUserForContact($cid) {
+
+    function getUserForContact($cid)
+    {
         return $this->getObject("User", array("contact_id" => $cid));
     }
 
-    function getUsersForRole($role) {
+    function getUsersForRole($role)
+    {
         if (!$role) {
             return null;
         }
@@ -256,7 +289,8 @@ class AuthService extends DbService {
         return $roleUsers;
     }
 
-    function getGroups() {
+    function getGroups()
+    {
         $rows = $this->_db->get("user")->where(array('is_active' => 1, 'is_deleted' => 0, 'is_group' => 1))->fetch_all();
 
         if ($rows) {
@@ -267,7 +301,8 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getGroupMembers($group_id = null, $user_id = null) {
+    function getGroupMembers($group_id = null, $user_id = null)
+    {
         if ($group_id)
             $option['group_id'] = $group_id;
 
@@ -282,7 +317,8 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getGroupMemberById($id) {
+    function getGroupMemberById($id)
+    {
         $groupMember = $this->getObject("GroupUser", $id);
 
         if ($groupMember) {
@@ -291,7 +327,8 @@ class AuthService extends DbService {
         return null;
     }
 
-    function getRoleForLoginUser($group_id, $user_id) {
+    function getRoleForLoginUser($group_id, $user_id)
+    {
         $groupMember = $this->getObject("GroupUser", array('group_id' => $group_id, 'user_id' => $user_id));
 
         if ($groupMember) {

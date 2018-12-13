@@ -2,7 +2,7 @@
 
 function ajaxGetMfaQrCode_POST(Web $w) {
     $w->setLayout(null);
-    $posts = json_decode(file_get_contents(('php://input')));
+    $posts = json_decode(file_get_contents('php://input'));
 
     if (empty($posts->user_id)) {
         $w->out((new AxiosResponse())->setErrorResponse(null, 'Unable to find user'));

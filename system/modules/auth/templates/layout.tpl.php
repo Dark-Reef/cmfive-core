@@ -15,7 +15,11 @@
             $w->enqueueScript(array("name" => "modernizr.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/modernizr.js", "weight" => 1000));
             $w->enqueueScript(array("name" => "jquery.js", "uri" => "/system/templates/js/foundation-5.5.0/js/vendor/jquery.js", "weight" => 990));
             $w->enqueueScript(array("name" => "foundation.min.js", "uri" => "/system/templates/js/foundation-5.5.0/js/foundation/foundation.js", "weight" => 980));
-            $w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 500));
+            $w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
+            $w->enqueueScript(['name' => 'vue-js', 'uri' => '/system/templates/js/vue.js', 'weight' => 200]);
+            CmfiveScriptComponentRegister::registerComponent('Axios', new CmfiveScriptComponent('/system/templates/js/axios.min.js'));
+            CmfiveScriptComponentRegister::registerComponent('ToastJS', new CmfiveScriptComponent('/system/templates/js/Toast.js'));
+            //$w->enqueueScript(array("name" => "main.js", "uri" => "/system/templates/js/main.js", "weight" => 500));
            
             $w->outputStyles();
             $w->outputScripts();

@@ -1,5 +1,5 @@
-<form method="POST" action="/auth/login">
-    <input type="hidden" name="<?php echo CSRF::getTokenID(); ?>" value="<?php echo CSRF::getTokenValue(); ?>" />
+<!-- <form method="POST" action="/auth/login">
+    <input type="hidden" name="<?php //echo CSRF::getTokenID(); ?>" value="<?php //echo CSRF::getTokenValue(); ?>" />
 
     <label for="login">Login</label>
     <input id="login" name="login" type="text" placeholder="Your login" />
@@ -7,7 +7,7 @@
     <input id="password" name="password" type="password" placeholder="Your password" />
     <button type="submit" class="button large-5 small-12">Login</button>
     <button type="button" onclick="window.location.href='/auth/forgotpassword';" class="button alert large-5 small-12 right">Forgot Password</button>
-</form>
+</form> -->
 
 <div v-cloak id="app">
     <div v-if="!user_is_mfa_enabled">
@@ -36,12 +36,12 @@
                 user_login: null,
                 user_password: null,
                 user_mfa_code: null,
-                user_is_mfa_enabled: false
-                is_loading: false
+                user_is_mfa_enabled: false,
+                is_loading: false,
             }
         },
         methods: {
-            isMfaEnabled: function {
+            isMfaEnabled: function() {
                 this.is_loading = true;
 
                 axios.post('/auth/ajaxIsMfaEnabled', {
@@ -49,7 +49,7 @@
                     user_password: user_password
                 }).then(function(response) {
                     if (response.statusText == 'OK') {
-
+                        debugger;
                     }
                     app.is_loading = false;
                 }).catch(function(error) {

@@ -47,12 +47,14 @@
                 axios.post('/auth/ajaxIsMfaEnabled', {
                     user_login: this.user_login,
                     user_password: this.user_password
-                }).then(function(response) {
+                })
+                .then(function(response) {
                     if (response.statusText == 'OK') {
                         console.log(response.data);
                     }
                     app.is_loading = false;
-                }).catch(function(error) {
+                })
+                .catch(function(error) {
                     console.log(error);
                     new Toast('Failed to login').show();
                 });

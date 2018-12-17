@@ -45,11 +45,11 @@
                 this.is_loading = true;
 
                 axios.post('/auth/ajaxIsMfaEnabled', {
-                    user_login: user_login,
-                    user_password: user_password
+                    user_login: this.user_login,
+                    user_password: this.user_password
                 }).then(function(response) {
                     if (response.statusText == 'OK') {
-                        debugger;
+                        console.log(response.data);
                     }
                     app.is_loading = false;
                 }).catch(function(error) {

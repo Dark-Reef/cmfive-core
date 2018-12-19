@@ -21,7 +21,7 @@ function users_GET(Web &$w) {
                 Html::a("/admin/useredit/".$user->id, "Edit", null, "button tiny editbutton") .
 				Html::a("/admin/permissionedit/".$user->id, "Permissions", null, "button tiny permissionsbutton") .
                 Html::a("/admin-user/remove/".$user->id, "Remove", null, "button tiny deletebutton") .
-                Html::a("/admin/editUser/" . $user->id, "Settings", null, "button tiny editbutton")
+                Html::a("/auth/editUser/" . $user->id, "Settings", null, "button tiny editbutton")
             ];
 	}
 	$w->ctx("table", Html::table($data, null, "tablesorter", $header));

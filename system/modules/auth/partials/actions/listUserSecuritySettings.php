@@ -1,4 +1,4 @@
-<?php namespace System\Modules\Admin;
+<?php namespace System\Modules\Auth;
 
 function listUserSecuritySettings_ALL(\Web $w, $user_id) {
     \VueComponentRegister::registerComponent('Modal', new \VueComponent('Modal', '/system/templates/vue-components/modal.vue.js'));

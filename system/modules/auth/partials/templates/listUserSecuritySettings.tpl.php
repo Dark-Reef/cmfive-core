@@ -38,7 +38,7 @@
             </div>
         </div>
     </div>
-    <modal id="confirm-mfa-modal" modal-title="Confirm MFA" style="max-width: 30rem;">
+    <!-- <modal id="confirm-mfa-modal" modal-title="Confirm MFA" style="max-width: 30rem;">
         <div class="small-6 columns" v-html="mfa_qr_code">
         </div>
         <div class="small-6 columns">
@@ -55,7 +55,7 @@
             <input type="password" v-model="user_passwords.remove_mfa_password" required>
             <input type="submit" class="button small alert" style="margin-top: 1rem;" value="Remove" :disabled="is_loading">
         </form>
-    </modal>
+    </modal> -->
 </div>
 <script>
     var security_settings = new Vue({

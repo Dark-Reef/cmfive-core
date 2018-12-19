@@ -213,7 +213,7 @@
                                 <?php
                                 echo Html::ul(
                                     array(
-                                        $w->menuBox("auth/profile/box", $w->Auth->user()->getShortName()),
+                                        $w->menuButton("auth/editUser", $w->Auth->user()->getShortName()),
                                         $w->menuLink("auth/logout", "Logout")
                                     ), null, "dropdown");
                                 ?>    

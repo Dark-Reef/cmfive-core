@@ -1,4 +1,4 @@
-<?php namespace System\Modules\Admin;
+<?php namespace System\Modules\Auth;
 
 function listUserGeneralSettings_ALL(\Web $w, $user_id) {
     $user;

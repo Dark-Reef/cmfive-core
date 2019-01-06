@@ -50,17 +50,41 @@
                 })
                 .then(function(response) {
                     if (response.statusText == 'OK') {
+                        if (response.data.isMfaEnabled) {
+                            app.getMfaCode();
+                        } else {
+                            app.login();
+                        }
+                    }
+                    app.is_loading = false;
+                })
+                .catch(function(error) {
+                    app.is_loading = false;
+                    new Toast('Failed to login').show();
+                });
+            },
+            getMfaCode: function() {
+
+            },
+            login: function() {
+                this.is_loading = true;
+
+                axios.post('/auth/login', {
+                    user_login: this.user_login,
+                    user_password: this.user_password
+                })
+                .then(function(response) {
+                    debugger;
+                    if (response.statusText == 'OK') {
                         console.log(response.data);
                     }
                     app.is_loading = false;
                 })
                 .catch(function(error) {
                     console.log(error);
+                    app.is_loading = false;
                     new Toast('Failed to login').show();
                 });
-            },
-            login: function() {
-
             }
         }
     })

@@ -19,10 +19,6 @@ function login_POST(Web &$w) {
         $client_timezone = "Australia/Sydney";
         $user = $w->Auth->login($_POST['login'], $_POST['password'], $client_timezone);
         if ($user) {
-            if ($user->is_mfa_enabled) {
-                $w->redirect('/auth/confirmMfa');
-            }
-
             if ($w->session('orig_path') != "auth/login") {
                 $url = $w->session('orig_path');
                 $w->Log->debug("Original path: " . $url);

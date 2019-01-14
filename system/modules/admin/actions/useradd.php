@@ -23,10 +23,10 @@ function useradd_GET(Web &$w) {
 function useradd_POST(Web &$w) {
 	$errors = $w->validate(array(
 		array("login", ".+", "Login is mandatory"),
-		array("password", ".+", "Password is mandatory"),
-		array("password2", ".+", "Password2 is mandatory"),
+		array("userpassword", ".+", "Password is mandatory"),
+		array("userpassword2", ".+", "Password2 is mandatory"),
 	));
-	if ($_REQUEST['password2'] != $_REQUEST['password']) {
+	if ($_REQUEST['userpassword2'] != $_REQUEST['userpassword']) {
 		$errors[] = "Passwords don't match";
 	}
 	if (sizeof($errors) != 0) {
@@ -52,7 +52,7 @@ function useradd_POST(Web &$w) {
 	$user->dt_created = time();
 	$user->contact_id = $contact->id;
 	$user->insert();
-	$user->setPassword($_REQUEST['password']);
+	$user->setPassword($_REQUEST['userpassword']);
 	$user->update();
 	$w->ctx("user", $user);
 

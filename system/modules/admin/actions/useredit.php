@@ -35,7 +35,7 @@ function useredit_POST(Web &$w) {
 	$errors = $w->validate(array(
 		array("login", ".+", "Login is mandatory"),
 	));
-	if ($_REQUEST['password'] && ($_REQUEST['password'] != $_REQUEST['password2'])) {
+	if ($_REQUEST['userpassword'] && ($_REQUEST['userpassword'] != $_REQUEST['userpassword2'])) {
 		$error[] = "Passwords don't match";
 	}
 	$user = $w->Auth->getObject("User", $w->ctx('id'));
@@ -48,8 +48,8 @@ function useredit_POST(Web &$w) {
 	$user->login = $_REQUEST['login'];
 
     $user->fill($_REQUEST);
-    if ($_REQUEST['password']) {
-        $user->setPassword($_REQUEST['password']);
+    if ($_REQUEST['userpassword']) {
+        $user->setPassword($_REQUEST['userpassword']);
     } else {
         $user->password = null;
     }

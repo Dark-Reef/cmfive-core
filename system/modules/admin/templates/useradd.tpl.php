@@ -7,8 +7,8 @@ array("External", "checkbox", "is_external"),
 	array("Language", "select", "language", null, $availableLocales));
 
 $form['User Details'][] = array(
-	array("Password", "password", "password"),
-	array("Repeat Password", "password", "password2"));
+	array("Password", "password", "userpassword"),
+	array("Repeat Password", "password", "userpassword2"));
 
 $form['Contact Details'][] = array(
 	array("First Name", "text", "firstname"),
